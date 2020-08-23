@@ -1,5 +1,5 @@
 body {
-    background-color: rgb(48, 37, 28);
+    background-color: rgb(73, 72, 72);
     margin: 0;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
       'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
@@ -14,7 +14,7 @@ body {
   }
 
   h1 {
-    font-size: 30px;
+    font-size: 40px;
     text-align: center;
     color: white;
     font-weight: bolder;
@@ -57,4 +57,12 @@ p {
     font-weight: bolder;
     font-family: 'Kaushan Script', cursive;
 
+}
+
+#booksearch {
+    border: solid red 3px;
+}
+
+#resultsdiv {
+    border: solid purple 3px
 }
