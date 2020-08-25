@@ -9,29 +9,36 @@ import { List, ListItem } from "../components/List/List";
 import Jumbotron from 'react-bootstrap/Jumbotron';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
-
+import axios from 'axios';
 
 
 
 function SearchBook() {
 
-    const [books, setBooks] = useState([])
+    const [books, setBooks] = useState('')
     const [formObject, setFormObject] = useState({
-        search: ""
+        savedBook: [],
+        title: [],
+        author: [],
+        synopsis: []
     })
+    const [bookList, setbookList] = useState({listing: []})
 
     useEffect(() => {
         loadBooks()
     }, [])
 
-   function searchForBook (event) {
+    function searchForBook(event) {
         event.preventDefault();
-        const query = formObject;
-        const BASEURL = "https://www.googleapis.com/books/v1/volumes"
-        fetch(BASEURL + query)
-        .then((data) => {
-            console.log(data)
-        })
+        const query =  books;
+        const BASEURL = `https://www.googleapis.com/books/v1/volumes?q=`
+        axios.get(BASEURL + query)
+            .then(res => {
+                console.log(res.data.items)
+                console.log("hello")
+                setbookList({listing: res.data.items})
+                setFormObject({savedBook: res.data.items, title: res.data.items, author: res.data.items, synopsis: res.data.items})
+            })
     }
 
     function loadBooks() {
@@ -48,59 +55,85 @@ function SearchBook() {
             .catch(err => console.log(err));
     }
 
-    function handleInputChange(event) {
-        const { name, value } = event.target;
-        setFormObject({ ...formObject, [name]: value })
-    };
+    // function handleInputChange(event) {
+    //     const { name, value } = event.target;
+    //     setFormObject({ ...formObject, [name]: value })
+    // };
 
     function handleFormSubmit(event) {
         event.preventDefault();
-        if (formObject.title) {
             API.saveBook({
                 title: formObject.title,
-                
+                author: formObject.author,
+                synopsis: formObject.synopsis
             })
                 .then(res => loadBooks())
                 .catch(err => console.log(err));
-        }
+                console.log("your book has been saved")
+        
     };
 
     return (
-        <div className="container">
-
+        <div>
+            <div className="container">
             <Jumbotron fluid>
                 <Container>
                     <h1>Google Book Club</h1>
                     <p>
                         Find a book today.
-                </p>
+                    </p>
                 </Container>
             </Jumbotron>
 
             <Container fluid id="booksearch">
                 <h1>Search A Book</h1>
-                <Row>
-                    <Col>
-                        <Input books ={setBooks}/>
-                    </Col>
+                    <form onSubmit={searchForBook}>
+                        <Input 
+                         placeholder='Book Search'
+                        onChange={event => setBooks(event.target.value)} />
                     <br></br>
 
                     <FormBtn
-                    enabled={!(formObject.title)}
-                    onClick={handleFormSubmit}
+                        // enabled={!(formObject.title)}
+                        // onClick={handleFormSubmit}
                     >Save your book</FormBtn>
-                </Row>
+                    </form>
             </Container>
-
+            </div>
             <br></br>
             <br></br>
 
-            <Container fluid id="resultsdiv" >
-                <h1>Results</h1>
-                <List /><ViewBtn /><SaveBtn />
+        <div>
+        <h1>Results</h1>
+                <List>
 
-            </Container>
+                {bookList.listing.map((bookListing, item) => (
+                    <ListItem key={item}>
+                        <Row>
+                        <Col>
+                        <h5>ID: {bookListing.id}</h5>
+                        <h5>Title: {bookListing.volumeInfo.title}</h5>
+                        <h5>Author: {bookListing.volumeInfo.authors}</h5>
+                        <p style={{color: "black"}}>Synopsis: {bookListing.volumeInfo.description}</p>
+                        </Col>
+                        <Col>
+                        <a href= {bookListing.volumeInfo.previewLink} target="_blank"  >
+                        <img src= {bookListing.volumeInfo.imageLinks.smallThumbnail} alt="bookImage" />
+                        </a>
+                        </Col>
+                        <Col>
+                        <ViewBtn /><SaveBtn onClick={handleFormSubmit} />
+                        </Col>
+                        </Row>
+
+                    </ListItem>
+
+                ))}
+                </List>
         </div>
+            
+                </div>
+
     )
 }
 

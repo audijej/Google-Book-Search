@@ -9,6 +9,7 @@ import {DeleteBtn, ViewBtn, SaveBtn} from '../components/Button/Btn';
 import API from "../utils/API";
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import axios from 'axios';
 
 
 
@@ -16,11 +17,27 @@ import { Link } from "react-router-dom";
 function ViewBook () {
 
     const [savedbooks, setSaveBooks] = useState([])
-    // const [formObject, setFormObject] = useState({})
+    const [formObject, setFormObject] = useState({})
+    const [books, setBooks] = useState('')
+    const [bookList, setbookList] = useState({listing: []})
+
 
     useEffect(() => {
         loadBooks()
     }, [])
+
+    function searchForBook(event) {
+        event.preventDefault();
+        const query =  books;
+        const BASEURL = `https://www.googleapis.com/books/v1/volumes?q=`
+        axios.get(BASEURL + query)
+            .then(res => {
+                console.log(res.data.items)
+                console.log("hello")
+                setbookList({listing: res.data.items})
+                setFormObject()
+            })
+    }
 
     function loadBooks() {
         API.getBooks()
@@ -79,7 +96,9 @@ function ViewBook () {
                   <ListItem key={book._id}>
                     <Link to={"/books/" + book._id}>
                       <strong>
+                      {/* <a href= {savedbooks.volumeInfo.previewLink} target="_blank"  > */}
                         {book.title} by {book.author}
+                        {/* </a> */}
                       </strong>
                     </Link>
                     <br></br>
