@@ -15,30 +15,44 @@ import axios from 'axios';
 
 function SearchBook() {
 
-    const [books, setBooks] = useState('')
-    const [formObject, setFormObject] = useState({
+    let bookParameters = {
         savedBook: [],
-        title: [],
-        author: [],
-        synopsis: []
-    })
-    const [bookList, setbookList] = useState({listing: []})
+        title: '',
+        authors: '',
+        description: '',
+        thumbnail: '',
+        link: ''
+    }
+
+    const [books, setBooks] = useState('')
+    const [formObject, setFormObject] = useState(bookParameters)
+
+    const [bookList, setbookList] = useState({ listing: [] })
+    const [searchTerm, setSearchTerm] = useState('')
 
     useEffect(() => {
         loadBooks()
     }, [])
 
-    function searchForBook(event) {
-        event.preventDefault();
-        const query =  books;
+    const searchForBook = async () => {
+        const query = searchTerm;
         const BASEURL = `https://www.googleapis.com/books/v1/volumes?q=`
-        axios.get(BASEURL + query)
+        await axios.get(BASEURL + query)
             .then(res => {
-                console.log(res.data.items)
                 console.log("hello")
-                setbookList({listing: res.data.items})
-                setFormObject({savedBook: res.data.items, title: res.data.items, author: res.data.items, synopsis: res.data.items})
+                setbookList({ listing: res.data.items })
+                setFormObject({ savedBook: res.data.items, title: res.data.items, author: res.data.items, synopsis: res.data.items })
+                console.log(res.data.items)
+
             })
+    }
+
+    // Submit handler
+    const onSubmitHandler = (event) => {
+        // Prevent browser refreshing after form submission
+        event.preventDefault();
+        // Call fetch books async function
+        searchForBook();
     }
 
     function loadBooks() {
@@ -60,79 +74,105 @@ function SearchBook() {
     //     setFormObject({ ...formObject, [name]: value })
     // };
 
+    const handleInputChange = (event) => {
+        setSearchTerm(event.target.value)
+    }
+
     function handleFormSubmit(event) {
         event.preventDefault();
-            API.saveBook({
-                title: formObject.title,
-                author: formObject.author,
-                synopsis: formObject.synopsis
+        const query = searchTerm;
+        const BASEURL = `https://www.googleapis.com/books/v1/volumes?q=`
+        axios.get(BASEURL + query)
+            .then(res => {
+                alert("This book has been saved")
+                const users = res.data.items;
+                return users.filter(user => {
+                    console.log(user.id)
+
+                    API.saveBook({
+                        _id: user.id,
+                        title: user.volumeInfo.title,
+                        author: user.volumeInfo.author,
+                        description: user.volumeInfo.description
+
+                    })
+                        .then(res => loadBooks())
+                        .catch(err => console.log(err));
+                    console.log(`the book ${user.volumeInfo.title} has been saved`)
+                });
             })
-                .then(res => loadBooks())
-                .catch(err => console.log(err));
-                console.log("your book has been saved")
-        
+
     };
+
+
 
     return (
         <div>
             <div className="container">
-            <Jumbotron fluid>
-                <Container>
-                    <h1>Google Book Club</h1>
-                    <p>
-                        Find a book today.
+                <Jumbotron fluid>
+                    <Container>
+                        <h1>Google Book Club</h1>
+                        <p>
+                            Find a book today.
                     </p>
-                </Container>
-            </Jumbotron>
+                    </Container>
+                </Jumbotron>
 
-            <Container fluid id="booksearch">
-                <h1>Search A Book</h1>
-                    <form onSubmit={searchForBook}>
-                        <Input 
-                         placeholder='Book Search'
-                        onChange={event => setBooks(event.target.value)} />
-                    <br></br>
+                <Container fluid id="booksearch">
+                    <h1>Search A Book</h1>
+                    <form onSubmit={onSubmitHandler}>
+                        <Input
+                            placeholder='Book Search'
+                            value={searchTerm}
+                            onChange={handleInputChange}
+                        />
+                        <br></br>
 
-                    <FormBtn
+                        <FormBtn
                         // enabled={!(formObject.title)}
                         // onClick={handleFormSubmit}
-                    >Save your book</FormBtn>
+                        >Save your book</FormBtn>
                     </form>
-            </Container>
+                </Container>
             </div>
+
             <br></br>
             <br></br>
 
-        <div>
-        <h1>Results</h1>
+            <div>
+                <h1>Results</h1>
                 <List>
 
-                {bookList.listing.map((bookListing, item) => (
-                    <ListItem key={item}>
-                        <Row>
-                        <Col>
-                        <h5>ID: {bookListing.id}</h5>
-                        <h5>Title: {bookListing.volumeInfo.title}</h5>
-                        <h5>Author: {bookListing.volumeInfo.authors}</h5>
-                        <p style={{color: "black"}}>Synopsis: {bookListing.volumeInfo.description}</p>
-                        </Col>
-                        <Col>
-                        <a href= {bookListing.volumeInfo.previewLink} target="_blank"  >
-                        <img src= {bookListing.volumeInfo.imageLinks.smallThumbnail} alt="bookImage" />
-                        </a>
-                        </Col>
-                        <Col>
-                        <ViewBtn /><SaveBtn onClick={handleFormSubmit} />
-                        </Col>
-                        </Row>
+                    {bookList.listing.map((bookListing, index) => (
+                        <ListItem key={index}>
+                            <Row>
+                                <Col>
+                                    <h5>ID: {bookListing.id}</h5>
+                                    <h5>Title: {bookListing.volumeInfo.title}</h5>
+                                    <h5>Author: {bookListing.volumeInfo.authors}</h5>
+                                    <p style={{ color: "black" }}>Synopsis: {bookListing.volumeInfo.description}</p>
+                                </Col>
+                                <Col>
+                                    <a href={bookListing.volumeInfo.previewLink} target="_blank"  >
+                                        <img src={bookListing.volumeInfo.imageLinks.smallThumbnail} alt="bookImage" />
+                                    </a>
+                                </Col>
+                                <Col>
+                                    <ViewBtn /><SaveBtn onClick={handleFormSubmit}
+                                        title={bookListing.volumeInfo.title}
+                                        authors={bookListing.volumeInfo.authors}
+                                        description={bookListing.volumeInfo.description} />
 
-                    </ListItem>
+                                </Col>
+                            </Row>
 
-                ))}
+                        </ListItem>
+
+                    ))}
                 </List>
+            </div>
+
         </div>
-            
-                </div>
 
     )
 }
