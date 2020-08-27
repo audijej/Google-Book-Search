@@ -24,15 +24,15 @@ function SearchBook() {
         link: ''
     }
 
-    const [books, setBooks] = useState('')
+    const [books, setBooks] = useState([])
     const [formObject, setFormObject] = useState(bookParameters)
 
     const [bookList, setbookList] = useState({ listing: [] })
     const [searchTerm, setSearchTerm] = useState('')
 
-    useEffect(() => {
-        loadBooks()
-    }, [])
+    // useEffect(() => {
+    //     loadBooks()
+    // }, [])
 
     const searchForBook = async () => {
         const query = searchTerm;
@@ -40,8 +40,9 @@ function SearchBook() {
         await axios.get(BASEURL + query)
             .then(res => {
                 console.log("hello")
+                setBooks(res.data.items)
                 setbookList({ listing: res.data.items })
-                setFormObject({ savedBook: res.data.items, title: res.data.items, author: res.data.items, synopsis: res.data.items })
+                setFormObject({ savedBook: res.data.items, title: res.data.items, authors: res.data.items, description: res.data.items })
                 console.log(res.data.items)
 
             })
@@ -74,34 +75,21 @@ function SearchBook() {
     //     setFormObject({ ...formObject, [name]: value })
     // };
 
-    const handleInputChange = (event) => {
+    const handleInputChange = (event, res) => {
         setSearchTerm(event.target.value)
     }
 
-    function handleFormSubmit(event) {
-        event.preventDefault();
-        const query = searchTerm;
-        const BASEURL = `https://www.googleapis.com/books/v1/volumes?q=`
-        axios.get(BASEURL + query)
-            .then(res => {
-                alert("This book has been saved")
-                const users = res.data.items;
-                return users.filter(user => {
-                    console.log(user.id)
-
+    function handleFormSubmit(index) {
+        // event.preventDefault();
+        
+        console.log(index)
                     API.saveBook({
-                        _id: user.id,
-                        title: user.volumeInfo.title,
-                        author: user.volumeInfo.author,
-                        description: user.volumeInfo.description
-
+                        title: books[index].volumeInfo.title,
+                        authors: books[index].volumeInfo.authors,
+                        description: books[index].volumeInfo.description,
+                        image: books[index].volumeInfo.imageLinks.smallThumbnail,
+                        link: books[index].volumeInfo.previewLink
                     })
-                        .then(res => loadBooks())
-                        .catch(err => console.log(err));
-                    console.log(`the book ${user.volumeInfo.title} has been saved`)
-                });
-            })
-
     };
 
 
@@ -122,27 +110,21 @@ function SearchBook() {
                     <h1>Search A Book</h1>
                     <form onSubmit={onSubmitHandler}>
                         <Input
-                            placeholder='Book Search'
+                            placeholder='Book...'
                             value={searchTerm}
                             onChange={handleInputChange}
                         />
                         <br></br>
-
-                        <FormBtn
-                        // enabled={!(formObject.title)}
-                        // onClick={handleFormSubmit}
-                        >Save your book</FormBtn>
                     </form>
-                </Container>
-            </div>
+                    </Container>
+                </div>
 
-            <br></br>
-            <br></br>
+                <br></br>
+                <br></br>
 
-            <div>
-                <h1>Results</h1>
-                <List>
-
+                <div>
+                    <h1>Results</h1>
+                    <List>
                     {bookList.listing.map((bookListing, index) => (
                         <ListItem key={index}>
                             <Row>
@@ -154,11 +136,11 @@ function SearchBook() {
                                 </Col>
                                 <Col>
                                     <a href={bookListing.volumeInfo.previewLink} target="_blank"  >
-                                        <img src={bookListing.volumeInfo.imageLinks.smallThumbnail} alt="bookImage" />
+                                        <img src={bookListing.volumeInfo.imageLinks.thumbnail} alt="bookImage" />
                                     </a>
                                 </Col>
                                 <Col>
-                                    <ViewBtn /><SaveBtn onClick={handleFormSubmit}
+                                    <ViewBtn /><SaveBtn onClick={() => handleFormSubmit(index)}
                                         title={bookListing.volumeInfo.title}
                                         authors={bookListing.volumeInfo.authors}
                                         description={bookListing.volumeInfo.description} />

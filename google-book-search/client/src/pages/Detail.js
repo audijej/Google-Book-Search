@@ -22,21 +22,25 @@ function Detail(props) {
         <Row>
           <Col size="md-12">
             <Jumbotron fluid>
-              <h1>
-                {book.title} 
-              </h1>
-              <h1>
-              by {book.author}
-              </h1>
+             
             </Jumbotron>
           </Col>
         </Row>
         <Row>
           <Col size="md-10 md-offset-1">
             <article>
+            <h1>
+                {book.title} 
+              </h1>
+              <h1>
+              by {book.authors}
+              </h1>
+              <a href={book.link} target="_blank"  >More Info Here</a>
+              <img src ={book.image} />
+
               <h1>Synopsis</h1>
               <p>
-                {book.synopsis}
+                {book.description}
               </p>
             </article>
           </Col>

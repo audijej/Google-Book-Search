@@ -26,18 +26,18 @@ function ViewBook () {
         loadBooks()
     }, [])
 
-    function searchForBook(event) {
-        event.preventDefault();
-        const query =  books;
-        const BASEURL = `https://www.googleapis.com/books/v1/volumes?q=`
-        axios.get(BASEURL + query)
-            .then(res => {
-                console.log(res.data.items)
-                console.log("hello")
-                setbookList({listing: res.data.items})
-                setFormObject()
-            })
-    }
+    // function searchForBook(event) {
+    //     event.preventDefault();
+    //     const query =  books;
+    //     const BASEURL = `https://www.googleapis.com/books/v1/volumes?q=`
+    //     axios.get(BASEURL + query)
+    //         .then(res => {
+    //             console.log(res.data.items)
+    //             console.log("hello")
+    //             setbookList({listing: res.data.items})
+    //             setFormObject()
+    //         })
+    // }
 
     function loadBooks() {
         API.getBooks()
