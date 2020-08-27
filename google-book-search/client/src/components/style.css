@@ -14,12 +14,22 @@ body {
   }
 
   h1 {
-    font-size: 40px;
+    font-size: 30px;
     text-align: center;
     color: white;
     font-weight: bolder;
     font-family: 'Kaushan Script', cursive;
 
+}
+
+#jumbotronHeading {
+    font-size: 80px;
+    font-weight: bolder;
+    text-align: center;
+    color: white;
+    font-weight: bolder;
+    font-family: 'Cinzel Decorative', cursive;
+    text-shadow: 1px 1px 2px black, 0 0 25px orange, 0 0 5px rgb(64, 231, 13)
 }
 
 footer {
@@ -48,6 +58,7 @@ i:hover {
 
 .jumbotron {
     background-color: sandybrown;
+
 }
 
 p {
@@ -59,10 +70,5 @@ p {
 
 }
 
-#booksearch {
-    border: solid red 3px;
-}
 
-#resultsdiv {
-    border: solid purple 3px
-}
+

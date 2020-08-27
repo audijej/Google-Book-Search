@@ -97,7 +97,7 @@ function ViewBook () {
                     <Link to={"/books/" + book._id}>
                       <strong>
                       {/* <a href= {savedbooks.volumeInfo.previewLink} target="_blank"  > */}
-                        {book.title} by {book.author}
+                        {book.title} by {book.authors}
                         {/* </a> */}
                       </strong>
                     </Link>

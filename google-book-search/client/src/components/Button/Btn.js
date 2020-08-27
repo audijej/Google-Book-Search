@@ -15,13 +15,23 @@ Delete
   );
 }
 
+export function SearchBtn(props) {
+  return (
+   
+<Button id="searchBtn" variant="primary" type="submit" {...props} role="button" tabIndex="0">
+Search
+</Button>
+
+  );
+}
+
 
 
 export function ViewBtn(props) {
     return (
      
   <Button id="viewBtn" variant="primary" type="submit" {...props} role="button" tabIndex="0">
-  View
+  View More Details
   </Button>
   
     );
@@ -31,11 +41,11 @@ export function ViewBtn(props) {
 
   export function SaveBtn(props) {
 
-    
+
     return (
      
   <Button id="saveBtn" variant="primary" type="submit" {...props} role="button" tabIndex="0">
-  Save
+  Save To Reading List
   </Button>
   
     );

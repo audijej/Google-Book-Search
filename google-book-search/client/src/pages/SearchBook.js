@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Input, TextArea, FormBtn } from '../components/Form/SearchForm';
 import FormControl from 'react-bootstrap/FormControl';
-import Button from 'react-bootstrap/Button';
-import { DeleteBtn, ViewBtn, SaveBtn } from '../components/Button/Btn';
+import { Button, ButtonGroup, ButtonToolbar, Toast } from 'react-bootstrap';
+import { SearchBtn, DeleteBtn, ViewBtn, SaveBtn } from '../components/Button/Btn';
 import API from "../utils/API";
 import Container from 'react-bootstrap/Container';
 import { List, ListItem } from "../components/List/List";
@@ -10,6 +10,9 @@ import Jumbotron from 'react-bootstrap/Jumbotron';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import axios from 'axios';
+import SaveToast from '../components/SaveToast/SaveToast';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 
@@ -29,6 +32,9 @@ function SearchBook() {
 
     const [bookList, setbookList] = useState({ listing: [] })
     const [searchTerm, setSearchTerm] = useState('')
+
+
+
 
     // useEffect(() => {
     //     loadBooks()
@@ -54,6 +60,7 @@ function SearchBook() {
         event.preventDefault();
         // Call fetch books async function
         searchForBook();
+        setSearchTerm('')
     }
 
     function loadBooks() {
@@ -81,30 +88,43 @@ function SearchBook() {
 
     function handleFormSubmit(index) {
         // event.preventDefault();
-        
         console.log(index)
-                    API.saveBook({
-                        title: books[index].volumeInfo.title,
-                        authors: books[index].volumeInfo.authors,
-                        description: books[index].volumeInfo.description,
-                        image: books[index].volumeInfo.imageLinks.smallThumbnail,
-                        link: books[index].volumeInfo.previewLink
-                    })
+        API.saveBook({
+            title: books[index].volumeInfo.title,
+            authors: books[index].volumeInfo.authors,
+            description: books[index].volumeInfo.description,
+            image: books[index].volumeInfo.imageLinks.smallThumbnail,
+            link: books[index].volumeInfo.previewLink
+        });
+        waveHello();
     };
+
+    function waveHello() {
+        console.log('👋');
+    }
+
+    function toasty() {
+        console.log("cheers to that")
+        toast("Saved to your Saved Books list", {
+            position: toast.POSITION.TOP_CENTER
+        });
+
+    }
+
 
 
 
     return (
         <div>
+            <Jumbotron fluid>
+                <Container>
+                    <h1 id="jumbotronHeading">Google Book Club</h1>
+                    <h1>
+                        Find a book today.
+                    </h1>
+                </Container>
+            </Jumbotron>
             <div className="container">
-                <Jumbotron fluid>
-                    <Container>
-                        <h1>Google Book Club</h1>
-                        <p>
-                            Find a book today.
-                    </p>
-                    </Container>
-                </Jumbotron>
 
                 <Container fluid id="booksearch">
                     <h1>Search A Book</h1>
@@ -114,17 +134,17 @@ function SearchBook() {
                             value={searchTerm}
                             onChange={handleInputChange}
                         />
-                        <br></br>
                     </form>
-                    </Container>
-                </div>
+                    <SearchBtn onClick={onSubmitHandler} />
+                </Container>
+            </div>
 
-                <br></br>
-                <br></br>
+            <br></br>
+            <br></br>
 
-                <div>
-                    <h1>Results</h1>
-                    <List>
+            <div>
+                <h1>Results</h1>
+                <List>
                     {bookList.listing.map((bookListing, index) => (
                         <ListItem key={index}>
                             <Row>
@@ -140,11 +160,22 @@ function SearchBook() {
                                     </a>
                                 </Col>
                                 <Col>
-                                    <ViewBtn /><SaveBtn onClick={() => handleFormSubmit(index)}
-                                        title={bookListing.volumeInfo.title}
-                                        authors={bookListing.volumeInfo.authors}
-                                        description={bookListing.volumeInfo.description} />
 
+                                    <ButtonToolbar>
+                                        <ButtonGroup className="mr-2" aria-label="First group">
+
+                                            <a href={bookListing.volumeInfo.previewLink} target="_blank"  >
+                                                <ViewBtn />
+                                            </a>
+                                        </ButtonGroup>
+                                        <ButtonGroup className="mr-2" aria-label="Second group">
+
+                                            <SaveBtn onClick={() => { handleFormSubmit(index); toasty() }}
+                                            />
+                                            <ToastContainer autoClose={5000} />
+                                        </ButtonGroup>
+
+                                    </ButtonToolbar>
                                 </Col>
                             </Row>
 
