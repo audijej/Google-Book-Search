@@ -20,7 +20,7 @@
 
 ## Description
 
-This is a simple application of my personal portfolio. The application was built with React. It utilizes functional components, Links (react-router-dom), & Router (react-router-dom). The portfolio showcases a landing page, about page, portfolio page, & contact page.
+This application allows a user to search books from the Google Books API. The user simply enters in the title, author or any keyword associated with the book. The application then returns a list of books that best matches the input entered. The title, authors, description, image and link to more info are combined into an easy to read list. The user then has the option of saving a book they're interested in for later reading. The user can navigate to the "Saved Books" link and view all the books they have saved. From the saved books, the user can click on the title and view relevant information pertaining to the book. The also have the option of linking to the google books website for further reading.
 
 ## Application
 
@@ -30,7 +30,7 @@ This is a simple application of my personal portfolio. The application was built
 
 The user can simply view the portfolio at the link provided above. The portfolio is hosted on Github and is all purely front end React.
 
-<img src="Personal-Portfolio-React-Demo.gif" width="900" height="500">
+<img src="Google-Book-Search-Demo.gif" width="900" height="500">
 
 ## Contributions
 
