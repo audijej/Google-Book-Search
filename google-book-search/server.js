@@ -10,7 +10,7 @@ const PORT = process.env.PORT || 3001;
 console.log("connect please")
 
 // Connect to the Mongo DB
-mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost:27017/googlebooks",
+mongoose.connect(process.env.MONGODB_URI || "mongodb://audijej:Silvia13@ds155841.mlab.com:55841/heroku_hzqzmb8x",
 { useUnifiedTopology: true, useNewUrlParser: true, useCreateIndex: true }
 );
 const mongo = process.env.MONGODB_URI
