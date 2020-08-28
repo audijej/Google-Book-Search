@@ -7,16 +7,6 @@ const app = express();
 require("dotenv").config()
 const PORT = process.env.PORT || 3001;
 
-console.log("connect please")
-
-// Connect to the Mongo DB
-mongoose.connect(process.env.MONGODB_URI || "mongodb://audijej:Silvia13@ds155841.mlab.com:55841/heroku_hzqzmb8x",
-{ useUnifiedTopology: true, useNewUrlParser: true, useCreateIndex: true }
-);
-const mongo = process.env.MONGODB_URI
-mongoose.connect(mongo)
-console.log("connect connect please")
-
 
 // Define middleware here
 app.use(express.urlencoded({ extended: true }));
@@ -28,7 +18,10 @@ if (process.env.NODE_ENV === "production") {
 // Add routes, both API and view
 app.use(routes);
 
-
+// Connect to the Mongo DB
+mongoose.connect(process.env.MONGODB_URI || "mongodb://audijej:Silvia13@ds155841.mlab.com:55841/heroku_hzqzmb8x",
+{ useUnifiedTopology: true, useNewUrlParser: true, useCreateIndex: true }
+);
 
 // Start the API server
 app.listen(PORT, function() {
