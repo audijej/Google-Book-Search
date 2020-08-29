@@ -26,7 +26,7 @@ This application allows a user to search books from the Google Books API. The us
 
 ## Application
 
--View Google Book Search Application here at [Google Book Search React](https://audijej.github.io/)
+-View Google Book Search Application here at [Google Book Search React](https://google-book-search-reactify.herokuapp.com/)
 
 ## Usage
 
